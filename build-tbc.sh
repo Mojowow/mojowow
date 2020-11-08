@@ -9,11 +9,11 @@ DATABASE_DIR="${DIR}/db-tbc"
 
 # find mangos hash
 cd MANGOS_DIR
-MANGOS_HASH=$(git rev-parse --short HEAD)
+MANGOS_HASH=$(git ls-tree --abbrev=8 HEAD mangos-tbc/ | grep -oP "commit \K\w+")
 echo "The current mangos-tbc Hash is: ${MANGOS_HASH}"
 # find database hash
 cd DATABASE_DIR
-DATABASE_HASH=$(git rev-parse --short HEAD)
+DATABASE_HASH=$(git ls-tree --abbrev=8 HEAD db-tbc/ | grep -oP "commit \K\w+")
 echo "The current db-tbc Hash is: ${DATABASE_HASH}"
 
 # find build & run dir
@@ -24,16 +24,17 @@ RUN_DIR="${DIR}/run-tbc/mangos-${MANGOS_HASH}_db-${DATABASE_HASH}"
 #[ -d "${BUILD_DIR}" ] && echo "Error: Build Directory ${BUILD_DIR} already exists - stopping build." && exit 1
 #[ -d "${RUN_DIR}" ] && echo "Error: Run Directory ${RUN_DIR} already exists - stopping build." && exit 1
 
-# makedir in build & run
+# makedir in build, logs & run
 mkdir $BUILD_DIR
+mkdir $BUILD_DIR/logs
 mkdir $RUN_DIR
 
 # cd BUILD_DIR
 cd $BUILD_DIR
 
 # build  
-cmake clear
-cmake $MANGOS_DIR \
+(cmake clear | tee $BUILD_DIR/logs/cmake.log) 3>&1 1>&2 2>&3 | tee $BUILD_DIR/logs/cmake.error.log
+(cmake $MANGOS_DIR \
     -DCMAKE_INSTALL_PREFIX=$RUN_DIR \
     -DPCH=1 \
     -DDEBUG=0 \
@@ -47,10 +48,11 @@ cmake $MANGOS_DIR \
     -DBUILD_AHBOT=ON \
     -DBUILD_RECASTDEMOMOD=ON \
     -DBUILD_GIT_ID=ON \
-    -DBUILD_DOCS=OFF
+    -DBUILD_DOCS=OFF \
+    | tee $BUILD_DIR/logs/cmake.log) 3>&1 1>&2 2>&3 | tee $BUILD_DIR/logs/cmake.error.log
     
-make
-make install
+(make | tee $BUILD_DIR/logs/make.log) 3>&1 1>&2 2>&3 | tee $BUILD_DIR/logs/make.error.log
+(make install | tee $BUILD_DIR/logs/make.log) 3>&1 1>&2 2>&3 | tee $BUILD_DIR/logs/make.error.log
 
 # create symlinks for executables
 REALMD_LINK="${DIR}/run-tbc/realmd"
