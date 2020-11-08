@@ -68,10 +68,11 @@ ln -s -f $CONFIG_DIR/playerbot.conf $RUN_DIR/etc/playerbot.conf
 ln -s -f $CONFIG_DIR/realmd.conf $RUN_DIR/etc/realmd.conf
 
 # create symlinks for executables
-echo "[Build] Save executable links"
+echo "[Build] Save executable links & Build Hashes"
 REALMD_LINK="${DIR}/run-tbc/realmd-latest"
 MANGOSD_LINK="${DIR}/run-tbc/mangosd-latest"
 
+echo "mangos-${MANGOS_HASH}_db-${DATABASE_HASH}" >> "${DIR}/build-tbc/build-latest"
 echo "${RUN_DIR}/bin/realmd" >> $REALMD_LINK
 echo "${RUN_DIR}/bin/mangosd" >> $MANGOSD_LINK
 
