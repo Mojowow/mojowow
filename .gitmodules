@@ -1,6 +1,6 @@
-[submodule "db-tbc"]
-	path = db-tbc
+[submodule "db"]
+	path = db
 	url = git://github.com/cmangos/tbc-db.git
-[submodule "mangos-tbc"]
-	path = mangos-tbc
+[submodule "mangos"]
+	path = mangos
 	url = git://github.com/cmangos/mangos-tbc.git
