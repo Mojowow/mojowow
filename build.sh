@@ -70,9 +70,9 @@ ln -s -f $CONFIG_DIR/realmd.conf $RUN_DIR/etc/realmd.conf
 
 # save executable links & build hashes
 echo "[Build] Save executable links & build hashes"
-REALMD_LINK="$LOG_DIR/realmd-latest"
-MANGOSD_LINK="$LOG_DIR/mangosd-latest"
-echo "mangos-${MANGOS_HASH}_db-${DATABASE_HASH}" >> "$LOG_DIR/build-latest"
+REALMD_LINK="${DIR}/log/realmd-latest"
+MANGOSD_LINK="${DIR}/log/mangosd-latest"
+echo "mangos-${MANGOS_HASH}_db-${DATABASE_HASH}" >> "${DIR}/log/build-latest"
 echo "${RUN_DIR}/bin/realmd" >> $REALMD_LINK
 echo "${RUN_DIR}/bin/mangosd" >> $MANGOSD_LINK
 
