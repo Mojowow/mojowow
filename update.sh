@@ -9,3 +9,8 @@ cd $DIR
 # update all submodules
 git submodule update --remote --checkout
 
+# Git commit & push
+#git add mangos
+#git add db
+#git commit -m "Automatic Update: $date"
+#git push
