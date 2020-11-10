@@ -87,4 +87,11 @@ ln -s -f "${RUN_DIR}/bin/tools/offmesh.txt" "${WOW_DIR}/offmesh.txt"
 ln -s -f "${RUN_DIR}/bin/tools/vmap_assembler" "${WOW_DIR}/vmap_assembler" | chmod +x "${WOW_DIR}/vmap_assembler"
 ln -s -f "${RUN_DIR}/bin/tools/vmap_extractor" "${WOW_DIR}/vmap_extractor" | chmod +x "${WOW_DIR}/vmap_extractor"
 
+# install world db
+echo "[Build] Install World Database"
+cd $DIR/db
+./InstallFullDB.sh
+
+#mysql -u root -proot tbcrealm < mangos/sql/base/realmd.sql 
+
 echo "[Build] Finished"
