@@ -2,7 +2,7 @@
 
 DIR=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 cd $DIR
-DATE=date +"%m-%d-%y"
+DATE=$(date +"%m-%d-%y")
 
 # update this repo
 #TODO:git pull --ff-only
