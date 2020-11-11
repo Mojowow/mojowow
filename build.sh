@@ -48,7 +48,7 @@ echo "[Build] CMake in ${MANGOS_DIR}"
     -DBUILD_LOGIN_SERVER=ON \
     -DBUILD_EXTRACTORS=ON \
     -DBUILD_SCRIPTDEV=ON \
-    -DBUILD_PLAYERBOT=ON \
+    -DBUILD_PLAYERBOT=OFF \
     -DBUILD_AHBOT=ON \
     -DBUILD_RECASTDEMOMOD=ON \
     -DBUILD_GIT_ID=ON \
@@ -72,9 +72,11 @@ ln -s -f $CONFIG_DIR/realmd.conf $RUN_DIR/etc/realmd.conf
 echo "[Build] Save executable links & build hashes"
 REALMD_LINK="${DIR}/log/realmd-latest"
 MANGOSD_LINK="${DIR}/log/mangosd-latest"
+LOG_LINK="${DIR}/log/log-latest"
 echo "mangos-${MANGOS_HASH}_db-${DATABASE_HASH}" >> "${DIR}/log/build-latest"
 echo "${RUN_DIR}/bin/realmd" >> $REALMD_LINK
 echo "${RUN_DIR}/bin/mangosd" >> $MANGOSD_LINK
+echo $LOG_DIR > $LOG_LINK
 
 # create symlinks for extractors
 echo "[Build] Link map extractors"
@@ -91,7 +93,5 @@ ln -s -f "${RUN_DIR}/bin/tools/vmap_extractor" "${WOW_DIR}/vmap_extractor" | chm
 echo "[Build] Install World Database"
 cd $DIR/db
 ./InstallFullDB.sh
-
-#mysql -u root -proot tbcrealm < mangos/sql/base/realmd.sql 
 
 echo "[Build] Finished"
