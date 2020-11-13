@@ -23,7 +23,7 @@ mysqldump --defaults-extra-file=${DIR}/db.config tbccharacters > $BACKUP_DIR/cha
 #update
 echo "[Update] Start Update"
 # update this repo
-#TODO:git pull --ff-only
+git pull --ff-only
 
 # find mangos hash
 cd $MANGOS_DIR
