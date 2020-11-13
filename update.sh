@@ -8,6 +8,10 @@ DATABASE_DIR="${DIR}/db"
 
 cd $DIR
 
+# stop server
+echo "[Server] Stop Server"
+$DIR/stop.sh
+
 # backup
 echo "[Backup] Start Backup"
 mkdir $BACKUP_DIR
@@ -167,3 +171,7 @@ done
 
 # Finish
 echo "[Build] Finished"
+
+# start server
+echo "[Server] Start Server"
+$DIR/start.sh
