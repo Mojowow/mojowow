@@ -29,6 +29,9 @@ echo "[Update] Start Update"
 # update this repo
 git pull --ff-only
 
+# update all submodules
+git submodule update --remote --checkout
+
 # find mangos hash
 cd $MANGOS_DIR
 MANGOS_HASH=$(git ls-tree --abbrev=8 HEAD mangos/ | grep -oP "commit \K\w+")
@@ -38,9 +41,6 @@ echo "[Update] The current mangos Hash is: ${MANGOS_HASH}"
 cd $DATABASE_DIR
 DATABASE_HASH=$(git ls-tree --abbrev=8 HEAD db/ | grep -oP "commit \K\w+")
 echo "[UPDATE] The current db Hash is: ${DATABASE_HASH}"
-
-# update all submodules
-git submodule update --remote --checkout
 
 # find new mangos hash
 cd $MANGOS_DIR
