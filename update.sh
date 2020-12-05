@@ -29,25 +29,26 @@ echo "[Update] Start Update"
 # update this repo
 git pull --ff-only
 
-# update all submodules
-git submodule update --remote --checkout
 
 # find mangos hash
-cd $MANGOS_DIR
+# cd $MANGOS_DIR
 MANGOS_HASH=$(git ls-tree --abbrev=8 HEAD mangos/ | grep -oP "commit \K\w+")
 echo "[Update] The current mangos Hash is: ${MANGOS_HASH}"
 
 # find database hash
-cd $DATABASE_DIR
+# cd $DATABASE_DIR
 DATABASE_HASH=$(git ls-tree --abbrev=8 HEAD db/ | grep -oP "commit \K\w+")
 echo "[UPDATE] The current db Hash is: ${DATABASE_HASH}"
 
+# update all submodules
+git submodule update --remote --checkout
+
 # find new mangos hash
-cd $MANGOS_DIR
+# cd $MANGOS_DIR
 MANGOS_HASH_NEW=$(git ls-tree --abbrev=8 HEAD mangos/ | grep -oP "commit \K\w+")
 echo "[Update] The new mangos Hash is: ${MANGOS_HASH_NEW}"
 # find new database hash
-cd $DATABASE_DIR
+#cd $DATABASE_DIR
 DATABASE_HASH_NEW=$(git ls-tree --abbrev=8 HEAD db/ | grep -oP "commit \K\w+")
 echo "[UPDATE] The new db Hash is: ${DATABASE_HASH_NEW}"
 
@@ -63,11 +64,11 @@ git push
 echo "[Build] Start building"
 
 # find mangos hash
-cd MANGOS_DIR
+cd $MANGOS_DIR
 MANGOS_HASH=$(git ls-tree --abbrev=8 HEAD mangos/ | grep -oP "commit \K\w+")
 echo "[Build] The current mangos Hash is: ${MANGOS_HASH}"
 # find database hash
-cd DATABASE_DIR
+cd $DATABASE_DIR
 DATABASE_HASH=$(git ls-tree --abbrev=8 HEAD db/ | grep -oP "commit \K\w+")
 echo "[Build] The current db Hash is: ${DATABASE_HASH}"
 
