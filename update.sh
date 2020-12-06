@@ -64,11 +64,11 @@ git push
 echo "[Build] Start building"
 
 # find mangos hash
-cd $MANGOS_DIR
+#cd $MANGOS_DIR
 MANGOS_HASH=$(git ls-tree --abbrev=8 HEAD mangos/ | grep -oP "commit \K\w+")
 echo "[Build] The current mangos Hash is: ${MANGOS_HASH}"
 # find database hash
-cd $DATABASE_DIR
+#cd $DATABASE_DIR
 DATABASE_HASH=$(git ls-tree --abbrev=8 HEAD db/ | grep -oP "commit \K\w+")
 echo "[Build] The current db Hash is: ${DATABASE_HASH}"
 
