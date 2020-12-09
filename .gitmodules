@@ -6,4 +6,4 @@
 	url = git://github.com/cmangos/mangos-tbc.git
 [submodule "web"]
 	path = web
-	url = ../mojotrollz-app.git
+	url = git://github.com/mojotrollz/mojotrollz-app.git
