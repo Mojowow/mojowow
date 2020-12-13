@@ -4,6 +4,6 @@
 [submodule "mangos"]
 	path = mangos
 	url = git://github.com/cmangos/mangos-tbc.git
-[submodule "web/app"]
-	path = web/app
+[submodule "web"]
+	path = web
 	url = git://github.com/mojotrollz/mojotrollz-app.git
