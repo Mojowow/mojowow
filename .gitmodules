@@ -1,3 +1,6 @@
 [submodule "web"]
 	path = web
-	url = git@github.com:Mojotrollz/mojotrollz-app.git
+	url = git@github.com:Mojowow/mojowow-web.git
+[submodule "mangos"]
+	path = mangos
+	url = ../../vmangos/core.git
