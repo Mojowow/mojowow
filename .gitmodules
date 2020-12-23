@@ -1,9 +1,3 @@
-[submodule "db"]
-	path = db
-	url = git://github.com/cmangos/tbc-db.git
-[submodule "mangos"]
-	path = mangos
-	url = git://github.com/cmangos/mangos-tbc.git
 [submodule "web"]
 	path = web
 	url = git@github.com:Mojotrollz/mojotrollz-app.git
