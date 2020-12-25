@@ -21,7 +21,7 @@ ${DIR}/stop.sh
 # backup
 echo "[Backup] Start Backup"
 mkdir ${BACKUP_DIR}
-ln -s -f ${BACKUP_DIR} ${DIR}/backup/latest
+ln -s -f ${DIR}/backup/latest ${BACKUP_DIR}
 
 # backup realmd
 echo "[Backup] Realmd Database"
@@ -118,6 +118,7 @@ ln -s -f ${RUN_DIR}/bin/realmd ${DIR}/run/realmd
 ln -s -f ${RUN_DIR}/bin/mangosd ${DIR}/run/mangosd
 ln -s -f ${LOG_DIR} ${DIR}/log/latest
 ln -s -f ${BUILD_DIR} ${DIR}/build/latest
+ln -s -f ${RUN_DIR} ${DIR}/run/latest
 
 # create symlinks for extractors
 echo "[Build] Link map extractors"
