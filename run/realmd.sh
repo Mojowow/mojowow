@@ -1,9 +1,8 @@
 #!/bin/bash
 
 DIR=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
-EXECUTABLE=$( tail -n 1 ${DIR}/../log/realmd-latest )
-
-EXECUTABLE_DIR=$(dirname "${EXECUTABLE}")
+EXECUTABLE=${DIR}/realmd
+LOGPATH=${DIR}/../log/latest
 
 crashcount=0
 
@@ -19,20 +18,20 @@ case $1 in
     detached )
         while :
         do
-                echo `date` >> $LOGPATH/realm-crash.log
-                cd $EXECUTABLE_DIR;
+                echo `date` >> ${LOGPATH}/realm-crash.log
+                cd ${DIR};
                 cmd="./realmd"
                 $cmd
                 status=$?
                 echo "Status after downtime is: $status"
-                mv $LOGPATH/Realm.log $LOGPATH/Realm$(date +%F-%H:%M).log && touch $LOGPATH/Realm.log
+                mv ${LOGPATH}/Realm.log ${LOGPATH}/Realm$(date +%F-%H:%M).log && touch ${LOGPATH}/Realm.log
                 if [ "$status" == "2" ]; then
                    echo `date` ", Realm daemon restarted."
                 elif [ "$status" == "0" ]; then
                    echo "date" ", Realm daemon shut down."
                    exit 0
                 else
-                   mv $LOGPATH/realm-crash.log $LOGPATH/realm-crash$(date +%F-%H:%M).log && touch $LOGPATH/realm-crash.log
+                   mv ${LOGPATH}/realm-crash.log ${LOGPATH}/realm-crash$(date +%F-%H:%M).log && touch ${LOGPATH}/realm-crash.log
                    echo "date" ", MaNGOS daemon crashed."
                    ((crashcount=crashcount+1))
                    if [ "$crashcount" -gt 50 ]; then

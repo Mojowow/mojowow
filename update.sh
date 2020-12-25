@@ -6,6 +6,12 @@ BACKUP_DIR="${DIR}/backup/$(date +%F-%H:%M)/"
 MANGOS_DIR="${DIR}/mangos"
 CONFIG_DIR="${DIR}/config"
 
+# Database
+DB_REALM="vmangos_realmd"
+DB_CHARACTERS="vmangos_characters"
+DB_MANGOS="vmangos_mangos"
+DB_LOGS="vmangos_logs"
+
 cd ${DIR}
 
 # stop server
@@ -18,12 +24,16 @@ mkdir ${BACKUP_DIR}
 ln -s -f ${BACKUP_DIR} ${DIR}/backup/latest
 
 # backup realmd
-#echo "[Backup] Realmd Database"
-#mysqldump --defaults-extra-file=${DIR}/db.config tbcrealmd > $BACKUP_DIR/reamld.sql
+echo "[Backup] Realmd Database"
+mysqldump --defaults-extra-file=${DIR}/db.config ${DB_REALM} > ${BACKUP_DIR}/${DB_REALM}.sql
 
 # backup characters
-#echo "[Backup] Characters Database"
-#mysqldump --defaults-extra-file=${DIR}/db.config tbccharacters > $BACKUP_DIR/characters.sql
+echo "[Backup] Characters Database"
+mysqldump --defaults-extra-file=${DIR}/db.config ${DB_CHARACTERS} > $BACKUP_DIR/${DB_CHARACTERS}.sql
+
+# backup logs
+echo "[Backup] Logs Database"
+mysqldump --defaults-extra-file=${DIR}/db.config ${DB_LOGS} > $BACKUP_DIR/${DB_LOGS}.sql
 
 #update
 echo "[Update] Start Update"
@@ -110,44 +120,56 @@ ln -s -f ${LOG_DIR} ${DIR}/log/latest
 ln -s -f ${BUILD_DIR} ${DIR}/build/latest
 
 # create symlinks for extractors
-#echo "[Build] Link map extractors"
-#WOW_DIR="${DIR}/data"
-#ln -s -f "${RUN_DIR}/bin/tools/ad" "${WOW_DIR}/ad" | chmod +x "${WOW_DIR}/ad"
-#ln -s -f "${RUN_DIR}/bin/tools/ExtractResources.sh" "${WOW_DIR}/ExtractResources.sh" | chmod +x "${WOW_DIR}/ExtractResources.sh"
-#ln -s -f "${RUN_DIR}/bin/tools/MoveMapGen" "${WOW_DIR}/MoveMapGen" | chmod +x "${WOW_DIR}/MoveMapGen"
-#ln -s -f "${RUN_DIR}/bin/tools/MoveMapGen.sh" "${WOW_DIR}/MoveMapGen.sh" | chmod +x "${WOW_DIR}/MoveMapGen.sh"
-#ln -s -f "${RUN_DIR}/bin/tools/offmesh.txt" "${WOW_DIR}/offmesh.txt"
-#ln -s -f "${RUN_DIR}/bin/tools/vmap_assembler" "${WOW_DIR}/vmap_assembler" | chmod +x "${WOW_DIR}/vmap_assembler"
-#ln -s -f "${RUN_DIR}/bin/tools/vmap_extractor" "${WOW_DIR}/vmap_extractor" | chmod +x "${WOW_DIR}/vmap_extractor"
+echo "[Build] Link map extractors"
+DATA_DIR="${DIR}/data"
+ln -s -f "${RUN_DIR}/bin/mapextractor" "${DATA_DIR}/mapextractor" | chmod +x "${DATA_DIR}/mapextractor"
+ln -s -f "${RUN_DIR}/bin/MoveMapGen" "${DATA_DIR}/MoveMapGen" | chmod +x "${DATA_DIR}/MoveMapGen"
+ln -s -f "${RUN_DIR}/bin/vmap_assembler" "${DATA_DIR}/vmap_assembler" | chmod +x "${DATA_DIR}/vmap_assembler"
+ln -s -f "${RUN_DIR}/bin/vmapextractor" "${DATA_DIR}/vmapextractor" | chmod +x "${DATA_DIR}/vmapextractor"
 
-# install world db
-#echo "[Build] Install World Database"
-#cd $DIR/db
-#./InstallFullDB.sh
+# install World Database Updates
+echo "[Build] Update World Database"
+for UPDATE in ${MANGOS_DIR}/sql/migrations/*_world.sql
+do
+    echo "    process update $UPDATE"
+    mysql --defaults-extra-file="${DIR}/db.config" --database="${DB_MANGOS}" < $UPDATE 2> /dev/null
+    [[ $? != 0 ]] && echo "    [skip] Could not apply $UPDATE"
+done
+echo
+echo
 
 # install Realm Database Updates
-#echo "[Build] Update Realm Database"
-#for UPDATE in ${MANGOS_DIR}/sql/updates/realmd/*.sql
-#do
-#    echo "    process update $UPDATE"
-#    mysql --defaults-extra-file="${DIR}/db.config" --database="tbcrealmd" < $UPDATE 2> /dev/null
-#    [[ $? != 0 ]] && echo "    [skip] Could not apply $UPDATE"
-#done
-#echo
-#echo
+echo "[Build] Update Realm Database"
+for UPDATE in ${MANGOS_DIR}/sql/migrations/*_logon.sql
+do
+    echo "    process update $UPDATE"
+    mysql --defaults-extra-file="${DIR}/db.config" --database="${DB_REALM}" < $UPDATE 2> /dev/null
+    [[ $? != 0 ]] && echo "    [skip] Could not apply $UPDATE"
+done
+echo
+echo
 
 # install Character Updates
-#echo "[Build] Update Character Database"
-#for UPDATE in ${MANGOS_DIR}/sql/updates/characters/*.sql
-#do
-#    echo "    process update $UPDATE"
-#    mysql --defaults-extra-file="${DIR}/db.config" --database="tbccharacters" < $UPDATE 2> /dev/null
-#    [[ $? != 0 ]] && echo "    [skip] Could not apply $UPDATE"
-#done
+echo "[Build] Update Character Database"
+for UPDATE in ${MANGOS_DIR}/sql/migrations/*_characters.sql
+do
+    echo "    process update $UPDATE"
+    mysql --defaults-extra-file="${DIR}/db.config" --database="${DB_CHARACTERS}" < $UPDATE 2> /dev/null
+    [[ $? != 0 ]] && echo "    [skip] Could not apply $UPDATE"
+done
+
+# install Logs Updates
+echo "[Build] Update Logs Database"
+for UPDATE in ${MANGOS_DIR}/sql/migrations/*_logs.sql
+do
+    echo "    process update $UPDATE"
+    mysql --defaults-extra-file="${DIR}/db.config" --database="${DB_LOGS}" < $UPDATE 2> /dev/null
+    [[ $? != 0 ]] && echo "    [skip] Could not apply $UPDATE"
+done
 
 # Finish
-#echo "[Build] Finished"
+echo "[Build] Finished"
 
 # start server
-#echo "[Server] Start Server"
-#$DIR/start.sh
+echo "[Server] Start Server"
+$DIR/start.sh
