@@ -10,11 +10,11 @@ crashcount=0
 
 case $1 in
     start )
-        screen -dmS tbc-mangos $PWD/$0 detached
+        screen -dmS classic-mangos $PWD/$0 detached
         echo "MaNGOS daemon started"
     ;;
     stop )
-        screen -X -S tbc-mangos quit
+        screen -X -S classic-mangos quit
         echo "MaNGOS deamon stopped"
     ;;
     detached )

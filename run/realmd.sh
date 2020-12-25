@@ -8,11 +8,11 @@ crashcount=0
 
 case $1 in
     start )
-        screen -dmS tbc-realm $PWD/$0 detached
+        screen -dmS classic-realm $PWD/$0 detached
         echo "Realm daemon started"
     ;;
     stop )
-        screen -X -S tbc-realm quit
+        screen -X -S classic-realm quit
         echo "Realm deamon stopped"
     ;;
     detached )
