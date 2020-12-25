@@ -4,17 +4,18 @@
 DIR=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 BACKUP_DIR="${DIR}/backup/$(date +%F-%H:%M)/"
 MANGOS_DIR="${DIR}/mangos"
-DATABASE_DIR="${DIR}/db"
+CONFIG_DIR="${DIR}/config"
 
-cd $DIR
+cd ${DIR}
 
 # stop server
 echo "[Server] Stop Server"
-$DIR/stop.sh
+${DIR}/stop.sh
 
 # backup
 echo "[Backup] Start Backup"
-mkdir $BACKUP_DIR
+mkdir ${BACKUP_DIR}
+ln -s -f ${BACKUP_DIR} ${DIR}/backup/latest
 
 # backup realmd
 #echo "[Backup] Realmd Database"
@@ -25,103 +26,82 @@ mkdir $BACKUP_DIR
 #mysqldump --defaults-extra-file=${DIR}/db.config tbccharacters > $BACKUP_DIR/characters.sql
 
 #update
-#echo "[Update] Start Update"
+echo "[Update] Start Update"
 # update this repo
-#git pull --ff-only
+git pull --ff-only
 
 
 # find mangos hash
-# cd $MANGOS_DIR
 MANGOS_HASH=$(git ls-tree --abbrev=8 HEAD mangos/ | grep -oP "commit \K\w+")
 echo "[Update] The current mangos Hash is: ${MANGOS_HASH}"
-
-# find database hash
-# cd $DATABASE_DIR
-#DATABASE_HASH=$(git ls-tree --abbrev=8 HEAD db/ | grep -oP "commit \K\w+")
-#echo "[UPDATE] The current db Hash is: ${DATABASE_HASH}"
 
 # update all submodules
 git submodule update --remote --checkout
 
 # find new mangos hash
-# cd $MANGOS_DIR
 MANGOS_HASH_NEW=$(git ls-tree --abbrev=8 HEAD mangos/ | grep -oP "commit \K\w+")
 echo "[Update] The new mangos Hash is: ${MANGOS_HASH_NEW}"
-# find new database hash
-#cd $DATABASE_DIR
-#DATABASE_HASH_NEW=$(git ls-tree --abbrev=8 HEAD db/ | grep -oP "commit \K\w+")
-#echo "[UPDATE] The new db Hash is: ${DATABASE_HASH_NEW}"
 
 # Git commit & push
-cd $DIR
+cd ${DIR}
 DATE=$(date +"%m-%d-%y")
 git add mangos/
 git commit -m "Automatic Update: ${DATE} - Mangos: ${MANGOS_HASH_NEW}"
 git push
 
+# Update MANGOS_HASH var
+MANGOS_HASH=${MANGOS_HASH_NEW}
+
 # build
 echo "[Build] Start building"
 
-# find mangos hash
-#cd $MANGOS_DIR
-MANGOS_HASH=$(git ls-tree --abbrev=8 HEAD mangos/ | grep -oP "commit \K\w+")
-echo "[Build] The current mangos Hash is: ${MANGOS_HASH}"
-# find database hash
-#cd $DATABASE_DIR
-#DATABASE_HASH=$(git ls-tree --abbrev=8 HEAD db/ | grep -oP "commit \K\w+")
-#echo "[Build] The current db Hash is: ${DATABASE_HASH}"
-
-# find build & run dir
+# find build, run & log dir
 BUILD_DIR="${DIR}/build/mangos-${MANGOS_HASH}"
 RUN_DIR="${DIR}/run/mangos-${MANGOS_HASH}"
 LOG_DIR="${DIR}/log/mangos-${MANGOS_HASH}"
 
-# die on directory exists
-#[ -d "${BUILD_DIR}" ] && echo "Error: Build Directory ${BUILD_DIR} already exists - stopping build." && exit 1
-#[ -d "${RUN_DIR}" ] && echo "Error: Run Directory ${RUN_DIR} already exists - stopping build." && exit 1
+# makedir in build, run & log
+echo "[Build] Make build, run & log directory"
+mkdir ${BUILD_DIR}
+mkdir ${RUN_DIR}
+mkdir ${LOG_DIR}
 
-# makedir in build, log & run
-echo "[Build] Make Build, Log & Run Directory"
-mkdir $BUILD_DIR
-mkdir $RUN_DIR
-mkdir $LOG_DIR
-
-# cd BUILD_DIR
-cd $BUILD_DIR
+cd ${BUILD_DIR}
 
 # build
 echo "[Build] CMake clear"
-(cmake clear | tee $LOG_DIR/cmake.log) 3>&1 1>&2 2>&3 | tee $LOG_DIR/cmake.error.log
+(cmake clear | tee ${LOG_DIR}/cmake.log) 3>&1 1>&2 2>&3 | tee ${LOG_DIR}/cmake.error.log
 echo "[Build] CMake in ${MANGOS_DIR}"
-(cmake $MANGOS_DIR \
-    -DCMAKE_INSTALL_PREFIX=$RUN_DIR \
+(cmake ${MANGOS_DIR} \
+    -DCMAKE_INSTALL_PREFIX=${RUN_DIR} \
     -DPCH=1 \
     -DDEBUG=0 \
     -DUSE_LIBCURL=1 \
-    | tee $LOG_DIR/cmake.log) 3>&1 1>&2 2>&3 | tee $LOG_DIR/cmake.error.log
+    | tee ${LOG_DIR}/cmake.log) 3>&1 1>&2 2>&3 | tee ${LOG_DIR}/cmake.error.log
 
 echo "[Build] Make"
-(make -j 4 | tee $LOG_DIR/make.log) 3>&1 1>&2 2>&3 | tee $LOG_DIR/make.error.log
+(make -j 4 | tee ${LOG_DIR}/make.log) 3>&1 1>&2 2>&3 | tee ${LOG_DIR}/make.error.log
 echo "[Build] Make install"
-(make install | tee $LOG_DIR/make.log) 3>&1 1>&2 2>&3 | tee $LOG_DIR/make.error.log
+(make install | tee ${LOG_DIR}/make.log) 3>&1 1>&2 2>&3 | tee ${LOG_DIR}/make.error.log
 
 # create symlinks for configs
-#echo "[Build] Link config files"
-#CONFIG_DIR="${DIR}/config/"
-#ln -s -f $CONFIG_DIR/ahbot.conf $RUN_DIR/etc/ahbot.conf
-#ln -s -f $CONFIG_DIR/mangosd.conf $RUN_DIR/etc/mangosd.conf
-#ln -s -f $CONFIG_DIR/playerbot.conf $RUN_DIR/etc/playerbot.conf
-#ln -s -f $CONFIG_DIR/realmd.conf $RUN_DIR/etc/realmd.conf
+echo "[Build] Link config files"
+ln -s -f ${CONFIG_DIR}/mangosd.conf ${RUN_DIR}/etc/mangosd.conf
+ln -s -f ${CONFIG_DIR}/realmd.conf ${RUN_DIR}/etc/realmd.conf
 
 # save executable links & build hashes
-#echo "[Build] Save executable links & build hashes"
-#REALMD_LINK="${DIR}/log/realmd-latest"
-#MANGOSD_LINK="${DIR}/log/mangosd-latest"
-#LOG_LINK="${DIR}/log/log-latest"
-#echo "mangos-${MANGOS_HASH}_db-${DATABASE_HASH}" >> "${DIR}/log/build-latest"
-#echo "${RUN_DIR}/bin/realmd" >> $REALMD_LINK
-#echo "${RUN_DIR}/bin/mangosd" >> $MANGOSD_LINK
-#echo $LOG_DIR > $LOG_LINK
+echo "[Build] Save executable links & build hashes"
+REALMD_LINK="${DIR}/log/realmd-latest"
+MANGOSD_LINK="${DIR}/log/mangosd-latest"
+LOG_LINK="${DIR}/log/log-latest"
+echo "mangos-${MANGOS_HASH}" >> "${DIR}/log/build-latest"
+echo "${RUN_DIR}/bin/realmd" >> $REALMD_LINK
+echo "${RUN_DIR}/bin/mangosd" >> $MANGOSD_LINK
+echo ${LOG_DIR} > ${LOG_LINK}
+ln -s -f ${RUN_DIR}/bin/realmd ${DIR}/run/realmd
+ln -s -f ${RUN_DIR}/bin/mangosd ${DIR}/run/mangosd
+ln -s -f ${LOG_DIR} ${DIR}/log/latest
+ln -s -f ${BUILD_DIR} ${DIR}/build/latest
 
 # create symlinks for extractors
 #echo "[Build] Link map extractors"
