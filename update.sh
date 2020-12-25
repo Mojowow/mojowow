@@ -69,13 +69,19 @@ mkdir ${LOG_DIR}
 cd ${BUILD_DIR}
 
 # build
-echo "[Build] CMake clear"
-(cmake clear | tee ${LOG_DIR}/cmake.log) 3>&1 1>&2 2>&3 | tee ${LOG_DIR}/cmake.error.log
+#echo "[Build] CMake clear"
+(cmake ${MANGOS_DIR} clear | tee ${LOG_DIR}/cmake.log) 3>&1 1>&2 2>&3 | tee ${LOG_DIR}/cmake.error.log
 echo "[Build] CMake in ${MANGOS_DIR}"
 (cmake ${MANGOS_DIR} \
     -DCMAKE_INSTALL_PREFIX=${RUN_DIR} \
     -DPCH=1 \
     -DDEBUG=0 \
+    -DSUPPORTED_CLIENT_BUILD=CLIENT_BUILD_1_12_1 \
+    -DUSE_STD_MALLOC=0 \
+    -DTBB_DEBUG=0 \
+    -DUSE_ANTICHEAT=1 \
+    -DSCRIPTS=1 \
+    -DUSE_EXTRACTORS=1 \
     -DUSE_LIBCURL=1 \
     | tee ${LOG_DIR}/cmake.log) 3>&1 1>&2 2>&3 | tee ${LOG_DIR}/cmake.error.log
 
