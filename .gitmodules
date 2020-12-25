@@ -3,4 +3,4 @@
 	url = git@github.com:Mojowow/mojowow-web.git
 [submodule "mangos"]
 	path = mangos
-	url = ../../vmangos/core.git
+	url = git@github.com:vmangos/core.git
