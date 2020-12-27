@@ -21,7 +21,7 @@ ${DIR}/stop.sh
 # backup
 echo "[Backup] Start Backup"
 mkdir ${BACKUP_DIR}
-ln -s -f ${DIR}/backup/latest ${BACKUP_DIR}
+ln -s -f ${BACKUP_DIR} ${DIR}/backup/latest
 
 # backup realmd
 echo "[Backup] Realmd Database"
