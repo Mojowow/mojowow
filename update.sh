@@ -12,6 +12,9 @@ DB_CHARACTERS="vmangos_characters"
 DB_MANGOS="vmangos_mangos"
 DB_LOGS="vmangos_logs"
 
+# Mangos
+MANGOS_REMOTE_BRANCH="development"
+
 cd ${DIR}
 
 # stop server
@@ -47,7 +50,7 @@ echo "[Update] The current mangos Hash is: ${MANGOS_HASH}"
 # update all submodules
 # git submodule update --remote --checkout
 cd ${MANGOS_DIR}
-git pull
+git pull origin ${MANGOS_REMOTE_BRANCH}
 cd ${DIR}
 
 # find new mangos hash
