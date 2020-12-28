@@ -40,13 +40,15 @@ echo "[Update] Start Update"
 # update this repo
 git pull --ff-only
 
-
 # find mangos hash
 MANGOS_HASH=$(git ls-tree --abbrev=8 HEAD mangos/ | grep -oP "commit \K\w+")
 echo "[Update] The current mangos Hash is: ${MANGOS_HASH}"
 
 # update all submodules
-git submodule update --remote --checkout
+# git submodule update --remote --checkout
+cd ${MANGOS_DIR}
+git pull
+cd ${DIR}
 
 # find new mangos hash
 MANGOS_HASH_NEW=$(git ls-tree --abbrev=8 HEAD mangos/ | grep -oP "commit \K\w+")
