@@ -14,7 +14,7 @@ case $1 in
         echo "MaNGOS daemon started"
     ;;
     stop )
-        screen -X -S classic-mangos quit
+        screen -X -S classic-mangos ^C
         echo "MaNGOS deamon stopped"
     ;;
     detached )
