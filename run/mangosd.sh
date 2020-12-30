@@ -10,13 +10,19 @@ crashcount=0
 
 case $1 in
     start )
+        $PWD/$0 kill # kill the sreen before restarting
         screen -dmS classic-mangos $PWD/$0 detached
         echo "MaNGOS daemon started"
     ;;
     stop )
-        screen -X -S classic-mangos ^C
-        echo "MaNGOS deamon stopped"
+        # Send ctrl+c to mangos to shut down gracefully
+        screen -X -S classic-mangos stuff $'\003'
+        echo "MaNGOS deamon exit gracefully"
     ;;
+    kill )
+        screen -X -S classic-mangos quit
+        echo "MaNGOS deamon stopped"
+    ;;  
     detached )
         while :
         do
