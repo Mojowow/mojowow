@@ -10,16 +10,20 @@ crashcount=0
 
 case $1 in
     start )
-        $PWD/$0 kill # kill the sreen before restarting
+        # kill the sreen before restarting.
+        $PWD/$0 kill
         screen -dmS classic-mangos $PWD/$0 detached
         echo "MaNGOS daemon started"
     ;;
     stop )
-        # Send ctrl+c to mangos to shut down gracefully
+        # Send ctrl+c to mangos to shut down gracefully.
+        # This will make mangos restart.
+        # Since we kill the realm reconnecting will not be possible.
         screen -X -S classic-mangos stuff $'\003'
         echo "MaNGOS deamon exit gracefully"
     ;;
     kill )
+        # This will kill mangos ungracefully
         screen -X -S classic-mangos quit
         echo "MaNGOS deamon stopped"
     ;;  
