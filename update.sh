@@ -44,17 +44,15 @@ echo "[Update] Start Update"
 git pull --ff-only
 
 # find mangos hash
-MANGOS_HASH=$(git ls-tree --abbrev=8 HEAD mangos/ | grep -oP "commit \K\w+")
+cd ${MANGOS_DIR}
+MANGOS_HASH=$(git rev-parse --short HEAD)
 echo "[Update] The current mangos Hash is: ${MANGOS_HASH}"
 
-# update all submodules
-# git submodule update --remote --checkout
-cd ${MANGOS_DIR}
+# update mangos reference
 git pull origin ${MANGOS_REMOTE_BRANCH}
-cd ${DIR}
 
 # find new mangos hash
-MANGOS_HASH_NEW=$(git ls-tree --abbrev=8 HEAD mangos/ | grep -oP "commit \K\w+")
+MANGOS_HASH_NEW=$(git rev-parse --short HEAD)
 echo "[Update] The new mangos Hash is: ${MANGOS_HASH_NEW}"
 
 # Git commit & push
