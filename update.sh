@@ -48,8 +48,10 @@ cd ${MANGOS_DIR}
 MANGOS_HASH=$(git rev-parse --short HEAD)
 echo "[Update] The current mangos Hash is: ${MANGOS_HASH}"
 
-# update mangos reference
-git pull origin ${MANGOS_REMOTE_BRANCH}
+# update mangos reference, handle force pushes
+git fetch
+git reset origin/${MANGOS_REMOTE_BRANCH} --hard
+#git pull origin ${MANGOS_REMOTE_BRANCH}
 
 # find new mangos hash
 MANGOS_HASH_NEW=$(git rev-parse --short HEAD)
