@@ -84,8 +84,6 @@ mkdir ${LOG_DIR}
 cd ${BUILD_DIR}
 
 # build
-#echo "[Build] CMake clear"
-(cmake ${MANGOS_DIR} clear | tee ${LOG_DIR}/cmake.log) 3>&1 1>&2 2>&3 | tee ${LOG_DIR}/cmake.error.log
 echo "[Build] CMake in ${MANGOS_DIR}"
 (cmake ${MANGOS_DIR} \
     -DCMAKE_INSTALL_PREFIX=${RUN_DIR} \
